@@ -1,9 +1,12 @@
 package models
 
-import "time"
+import (
+	"lithium-test/pb"
+	"time"
+)
 
 type Product struct {
-	ID          uint
+	ID          int64
 	Name        string
 	Description string
 	Price       float64
@@ -23,4 +26,19 @@ type Product struct {
 	SubscriptionPeriod *string
 	RenewalPrice       *float64
 	NextRenewalDate    *time.Time
+}
+
+func (p *Product) ToProto() *pb.Product {
+	if p != nil {
+		return &pb.Product{
+			Id:        p.ID,
+			Name:      p.Name,
+			Type:      p.Type,
+			Price:     float32(p.Price), // TODO: Sort this to avoid truncations
+			CreatedAt: p.UpdatedAt.GoString(),
+			UpdatedAt: p.UpdatedAt.GoString(),
+		}
+	}
+
+	return nil
 }
