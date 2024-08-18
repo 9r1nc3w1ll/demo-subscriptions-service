@@ -2,17 +2,22 @@ package services
 
 import (
 	"context"
+	"lithium-test/auth"
 	"lithium-test/pb"
 
 	"google.golang.org/protobuf/types/known/emptypb"
+	"gorm.io/gorm"
 )
 
 type SubscriptionService struct {
 	pb.UnimplementedSubscriptionServiceServer
+	db *gorm.DB
 }
 
 func (s *SubscriptionService) GetSubscriptionPlan(ctx context.Context, in *pb.GetSubscriptionPlanInput) (*pb.SubscriptionPlan, error) {
-	// panic("no implemented")
+	if err := auth.ValidateToken(ctx, "Bearer"); err != nil {
+		return nil, err
+	}
 
 	return nil, nil
 }
@@ -41,8 +46,10 @@ func (s *SubscriptionService) DeleteSubscriptionPlan(ctx context.Context, in *pb
 	return nil, nil
 }
 
-func NewSubscriptionService() *SubscriptionService {
-	service := SubscriptionService{}
+func NewSubscriptionService(db *gorm.DB) *SubscriptionService {
+	service := SubscriptionService{
+		db: db,
+	}
 
 	return &service
 }

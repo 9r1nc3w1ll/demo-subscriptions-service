@@ -6,3 +6,6 @@ proto_clean:
 
 run:
 	reflex -r '\.go$$' -s -- go run main.go
+
+infra:
+	docker compose -p lithium_test up -d

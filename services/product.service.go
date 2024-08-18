@@ -5,10 +5,12 @@ import (
 	"lithium-test/pb"
 
 	"google.golang.org/protobuf/types/known/emptypb"
+	"gorm.io/gorm"
 )
 
 type ProductService struct {
 	pb.UnimplementedProductServiceServer
+	db *gorm.DB
 }
 
 func (s *ProductService) GetProduct(ctx context.Context, in *pb.GetProductInput) (*pb.Product, error) {
@@ -41,8 +43,10 @@ func (s *ProductService) DeleteProduct(ctx context.Context, in *pb.DeleteProduct
 	return nil, nil
 }
 
-func NewProductService() *ProductService {
-	service := ProductService{}
+func NewProductService(db *gorm.DB) *ProductService {
+	service := ProductService{
+		db: db,
+	}
 
 	return &service
 }
