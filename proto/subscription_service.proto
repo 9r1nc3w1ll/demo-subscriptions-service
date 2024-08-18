@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package pb;
+option go_package = "/pb";
+
+import "google/protobuf/empty.proto";
+
+service SubscriptionService {
+  rpc GetSubscriptionPlan(GetSubscriptionPlanInput) returns (SubscriptionPlan);
+  rpc CreateSubscriptionPlan(CreateSubscriptionPlanInput) returns (SubscriptionPlan);
+  rpc DeleteSubscriptionPlan(DeleteSubscriptionPlanInput) returns (google.protobuf.Empty);
+  rpc UpdateSubscriptionPlan(SubscriptionPlan) returns (SubscriptionPlan);
+  rpc ListSubscriptionPlans(google.protobuf.Empty) returns (SubscriptionPlanList);
+}
+
+message CreateSubscriptionPlanInput{
+  string name = 1;
+  string productId = 2;
+  int64 duration = 3;
+  float price = 4;
+}
+
+message GetSubscriptionPlanInput {
+  string id = 1;
+}
+
+message DeleteSubscriptionPlanInput {
+  string id = 1;
+}
+
+message SubscriptionPlan {
+  string id = 1;
+  string name = 2;
+  string productId = 3;
+  int64 duration = 4;
+  float price = 5;
+  string createdAt = 6;
+  string updatedAt = 7;
+}
+
+message SubscriptionPlanList {
+  repeated SubscriptionPlan data = 1;
+}
+
