@@ -7,8 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func InitDB() (*gorm.DB, error) {
-	dsn := "host=localhost user=root password=root dbname=lithium_test_db port=5490 sslmode=disable TimeZone=UTC"
+func InitDB(dsn string) (*gorm.DB, error) {
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil, err

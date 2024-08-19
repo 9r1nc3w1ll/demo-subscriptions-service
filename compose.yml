@@ -8,3 +8,4 @@ services:
       POSTGRES_DB: "${DATABASE_NAME}"
       POSTGRES_USER: "${DATABASE_USER}"
       POSTGRES_PASSWORD: "${DATABASE_PASSWORD}"
+# postgresql://root:root@localhost:5490/lithium_test_db?statusColor=F8F8F8&env=&name=lithium-test&tLSMode=0&usePrivateKey=false&safeModeLevel=0&advancedSafeModeLevel=0&driverVersion=0&lazyload=true
