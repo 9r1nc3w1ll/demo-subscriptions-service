@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"fmt"
 	"lithium-test/auth"
 	"lithium-test/db/models"
 	"lithium-test/pb"
@@ -55,11 +56,30 @@ func (s *ProductService) CreateProduct(ctx context.Context, in *pb.CreateProduct
 		return nil, err
 	}
 
+	if !models.ProductType(in.Type).IsValid() {
+		return nil, fmt.Errorf("invalid product type %s", in.Type)
+	}
+
 	product := models.Product{
 		Name:        in.Name,
 		Description: in.Description,
-		Type:        in.Type,
+		Type:        models.ProductType(in.Type),
 		Price:       float64(in.Price),
+	}
+
+	if in.Type == models.PhysicalProductType {
+		product.Dimensions = &in.Dimensions
+		product.Weight = &in.Weight
+	}
+
+	if in.Type == models.DigitalProductType {
+		product.FileSize = &in.FileSize
+		product.DownloadLink = &in.DownloadLink
+	}
+
+	if in.Type == models.SubscriptionProductType {
+		product.SubscriptionPeriod = &in.SubscriptionPeriod
+		product.RenewalPrice = &in.RenewalPrice
 	}
 
 	if result := s.db.Create(&product); result.Error != nil {
@@ -76,7 +96,7 @@ func (s *ProductService) UpdateProduct(ctx context.Context, in *pb.Product) (*pb
 
 	product := models.Product{
 		Name:  in.Name,
-		Type:  in.Type,
+		Type:  models.ProductType(in.Type),
 		Price: float64(in.Price),
 	}
 

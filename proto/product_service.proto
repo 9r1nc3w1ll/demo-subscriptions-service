@@ -18,6 +18,18 @@ message CreateProductInput{
   string type = 2;
   float price = 3;
   string description = 4;
+
+  // digital product fields
+  int64 fileSize = 5;
+  string downloadLink = 6;
+
+  // physical product fields
+  float weight = 7;
+  string dimensions = 8;
+
+  // subscription product fields
+  string subscriptionPeriod = 9;
+  float renewalPrice = 10;
 }
 
 message GetProductInput {
@@ -35,6 +47,18 @@ message Product {
   float price = 4;
   string createdAt = 5;
   string updatedAt = 6;
+
+  // digital product fields
+  int64 fileSize = 7;
+  string downloadLink = 8;
+
+  // physical product fields
+  float weight = 9;
+  string dimensions = 10;
+
+  // subscription product fields
+  string subscriptionPeriod = 11;
+  float renewalPrice = 12;
 }
 
 message ProductList {

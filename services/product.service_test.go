@@ -85,7 +85,29 @@ func TestMain(m *testing.M) {
 }
 
 func TestCreateProduct(t *testing.T) {
-	t.Run("Successfully create product", func(t *testing.T) {
+	t.Run("Validate product type", func(t *testing.T) {
+		ctx := context.Background()
+
+		md := metadata.New(map[string]string{
+			"authorization": "Bearer VALID_TEST_TOKEN",
+		})
+		ctx = metadata.NewIncomingContext(ctx, md)
+		service := NewProductService(db)
+
+		response, err := service.CreateProduct(ctx, &pb.CreateProductInput{
+			Name:        "Unknown Product",
+			Type:        "unknown_type",
+			Price:       10.50,
+			Description: "Description of Unknown Product",
+			Dimensions:  "100x150 (cm)",
+			Weight:      10,
+		})
+
+		assert.Nil(t, response)
+		assert.Equal(t, "invalid product type unknown_type", err.Error())
+	})
+
+	t.Run("Successfully create physical product", func(t *testing.T) {
 		ctx := context.Background()
 
 		md := metadata.New(map[string]string{
@@ -96,13 +118,113 @@ func TestCreateProduct(t *testing.T) {
 
 		response, err := service.CreateProduct(ctx, &pb.CreateProductInput{
 			Name:        "Product 1",
-			Type:        "PHYSICAL",
+			Type:        "physical",
 			Price:       10.50,
 			Description: "Description of product 1",
+			Dimensions:  "100x150 (cm)",
+			Weight:      10,
+
+			// These fields will be ignored for physical products
+			FileSize:           20,
+			DownloadLink:       "https://download.test",
+			SubscriptionPeriod: "30 days",
+			RenewalPrice:       11.99,
 		})
 
 		assert.Nil(t, err)
 		assert.NotEmpty(t, response)
+		assert.Equal(t, "100x150 (cm)", response.Dimensions)
+		assert.Equal(t, float32(10), response.Weight)
+
+		// Assert that ignored fields are empty
+		assert.Empty(t, response.FileSize)
+		assert.Empty(t, response.DownloadLink)
+		assert.Empty(t, response.RenewalPrice)
+		assert.Empty(t, response.SubscriptionPeriod)
+
+		t.Cleanup(func() {
+			service.DeleteProduct(ctx, &pb.DeleteProductInput{
+				Id: response.Id,
+			})
+		})
+	})
+
+	t.Run("Successfully create digital product", func(t *testing.T) {
+		ctx := context.Background()
+
+		md := metadata.New(map[string]string{
+			"authorization": "Bearer VALID_TEST_TOKEN",
+		})
+		ctx = metadata.NewIncomingContext(ctx, md)
+		service := NewProductService(db)
+
+		response, err := service.CreateProduct(ctx, &pb.CreateProductInput{
+			Name:         "Product 2",
+			Type:         "digital",
+			Price:        10.50,
+			Description:  "Description of product 2",
+			FileSize:     20,
+			DownloadLink: "https://download.test",
+
+			// These fields will be ignored for digital products
+			Dimensions:         "100x150 (cm)",
+			Weight:             10,
+			SubscriptionPeriod: "30 days",
+			RenewalPrice:       11.99,
+		})
+
+		assert.Nil(t, err)
+		assert.NotEmpty(t, response)
+		assert.Equal(t, int64(20), response.FileSize)
+		assert.Equal(t, "https://download.test", response.DownloadLink)
+
+		// Assert that ignored fields are empty
+		assert.Empty(t, response.Dimensions)
+		assert.Empty(t, response.Weight)
+		assert.Empty(t, response.RenewalPrice)
+		assert.Empty(t, response.SubscriptionPeriod)
+
+		t.Cleanup(func() {
+			service.DeleteProduct(ctx, &pb.DeleteProductInput{
+				Id: response.Id,
+			})
+		})
+	})
+
+	t.Run("Successfully create subscription product", func(t *testing.T) {
+		ctx := context.Background()
+
+		md := metadata.New(map[string]string{
+			"authorization": "Bearer VALID_TEST_TOKEN",
+		})
+		ctx = metadata.NewIncomingContext(ctx, md)
+		service := NewProductService(db)
+
+		response, err := service.CreateProduct(ctx, &pb.CreateProductInput{
+			Name:               "Product 3",
+			Type:               "subscription",
+			Price:              10.50,
+			Description:        "Description of product 3",
+			SubscriptionPeriod: "30 days",
+			RenewalPrice:       11.99,
+
+			// These fields will be ignored for subscription products
+			Dimensions:   "100x150 (cm)",
+			Weight:       10,
+			FileSize:     20,
+			DownloadLink: "https://download.test",
+		})
+
+		assert.Nil(t, err)
+		assert.NotEmpty(t, response)
+		assert.Equal(t, "30 days", response.SubscriptionPeriod)
+		assert.Equal(t, float32(11.99), response.RenewalPrice)
+
+		// Assert that ignored fields are empty
+		assert.Empty(t, response.Dimensions)
+		assert.Empty(t, response.Weight)
+		assert.Empty(t, response.FileSize)
+		assert.Empty(t, response.DownloadLink)
 
 		t.Cleanup(func() {
 			service.DeleteProduct(ctx, &pb.DeleteProductInput{
@@ -123,7 +245,7 @@ func TestGetProduct(t *testing.T) {
 	service := NewProductService(db)
 	data, err := service.CreateProduct(ctx, &pb.CreateProductInput{
 		Name:        "Product 1",
-		Type:        "PHYSICAL",
+		Type:        "physical",
 		Price:       10.50,
 		Description: "Description of product 1",
 	})
@@ -164,7 +286,7 @@ func TestListProducts(t *testing.T) {
 	service := NewProductService(db)
 	data, err := service.CreateProduct(ctx, &pb.CreateProductInput{
 		Name:        "Product 1",
-		Type:        "PHYSICAL",
+		Type:        "physical",
 		Price:       10.50,
 		Description: "Description of product 1",
 	})
@@ -196,7 +318,7 @@ func TestDeleteProduct(t *testing.T) {
 	service := NewProductService(db)
 	response, err := service.CreateProduct(ctx, &pb.CreateProductInput{
 		Name:        "Product 1",
-		Type:        "PHYSICAL",
+		Type:        "physical",
 		Price:       10.50,
 		Description: "Description of product 1",
 	})
