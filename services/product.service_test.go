@@ -13,6 +13,7 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/ory/dockertest/v3"
 	"github.com/stretchr/testify/assert"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -86,6 +87,11 @@ func TestMain(m *testing.M) {
 func TestCreateProduct(t *testing.T) {
 	t.Run("Successfully create product", func(t *testing.T) {
 		ctx := context.Background()
+
+		md := metadata.New(map[string]string{
+			"authorization": "Bearer VALID_TEST_TOKEN",
+		})
+		ctx = metadata.NewIncomingContext(ctx, md)
 		service := NewProductService(db)
 
 		response, err := service.CreateProduct(ctx, &pb.CreateProductInput{
@@ -108,6 +114,12 @@ func TestCreateProduct(t *testing.T) {
 
 func TestGetProduct(t *testing.T) {
 	ctx := context.Background()
+
+	md := metadata.New(map[string]string{
+		"authorization": "Bearer VALID_TEST_TOKEN",
+	})
+	ctx = metadata.NewIncomingContext(ctx, md)
+
 	service := NewProductService(db)
 	data, err := service.CreateProduct(ctx, &pb.CreateProductInput{
 		Name:        "Product 1",
@@ -143,6 +155,12 @@ func TestGetProduct(t *testing.T) {
 
 func TestListProducts(t *testing.T) {
 	ctx := context.Background()
+
+	md := metadata.New(map[string]string{
+		"authorization": "Bearer VALID_TEST_TOKEN",
+	})
+	ctx = metadata.NewIncomingContext(ctx, md)
+
 	service := NewProductService(db)
 	data, err := service.CreateProduct(ctx, &pb.CreateProductInput{
 		Name:        "Product 1",
@@ -169,6 +187,12 @@ func TestListProducts(t *testing.T) {
 
 func TestDeleteProduct(t *testing.T) {
 	ctx := context.Background()
+
+	md := metadata.New(map[string]string{
+		"authorization": "Bearer VALID_TEST_TOKEN",
+	})
+	ctx = metadata.NewIncomingContext(ctx, md)
+
 	service := NewProductService(db)
 	response, err := service.CreateProduct(ctx, &pb.CreateProductInput{
 		Name:        "Product 1",

@@ -8,12 +8,19 @@ import (
 
 	_ "github.com/lib/pq"
 	"github.com/stretchr/testify/assert"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 func TestCreateSubscriptionPlan(t *testing.T) {
 	t.Run("Successfully create product", func(t *testing.T) {
 		ctx := context.Background()
+
+		md := metadata.New(map[string]string{
+			"authorization": "Bearer VALID_TEST_TOKEN",
+		})
+		ctx = metadata.NewIncomingContext(ctx, md)
+
 		productService := NewProductService(db)
 		subscriptionService := NewSubscriptionService(db)
 
@@ -52,6 +59,12 @@ func TestCreateSubscriptionPlan(t *testing.T) {
 
 func TestGetSubscriptionPlan(t *testing.T) {
 	ctx := context.Background()
+
+	md := metadata.New(map[string]string{
+		"authorization": "Bearer VALID_TEST_TOKEN",
+	})
+	ctx = metadata.NewIncomingContext(ctx, md)
+
 	productService := NewProductService(db)
 	subscriptionService := NewSubscriptionService(db)
 
@@ -105,6 +118,12 @@ func TestGetSubscriptionPlan(t *testing.T) {
 
 func TestGetSubscriptionPlans(t *testing.T) {
 	ctx := context.Background()
+
+	md := metadata.New(map[string]string{
+		"authorization": "Bearer VALID_TEST_TOKEN",
+	})
+	ctx = metadata.NewIncomingContext(ctx, md)
+
 	productService := NewProductService(db)
 	subscriptionService := NewSubscriptionService(db)
 
@@ -148,6 +167,12 @@ func TestGetSubscriptionPlans(t *testing.T) {
 
 func TestDeleteSubscriptionPlan(t *testing.T) {
 	ctx := context.Background()
+
+	md := metadata.New(map[string]string{
+		"authorization": "Bearer VALID_TEST_TOKEN",
+	})
+	ctx = metadata.NewIncomingContext(ctx, md)
+
 	productService := NewProductService(db)
 	subscriptionService := NewSubscriptionService(db)
 

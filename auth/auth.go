@@ -31,6 +31,5 @@ func ValidateToken(ctx context.Context, tokenType string) error {
 		}
 	}
 
-	return nil
-	// return fmt.Errorf("invalid token. code: %v", codes.Unauthenticated)
+	return fmt.Errorf("invalid token. code: %v", codes.Unauthenticated)
 }
