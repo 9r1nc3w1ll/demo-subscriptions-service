@@ -1,0 +1,17 @@
+# git folder
+.git/
+
+# markdown files
+*.md
+
+# generated code
+mocks/
+*.mock.go
+*generated.go
+*_gen.go
+
+# environment
+.env*
+
+# system files
+**/.DS_Store
