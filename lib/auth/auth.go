@@ -33,3 +33,11 @@ func ValidateToken(ctx context.Context, tokenType string) error {
 
 	return fmt.Errorf("invalid token. code: %v", codes.Unauthenticated)
 }
+
+func SetAuthContextForTest(ctx context.Context, tokenType, token string) context.Context {
+	md := metadata.New(map[string]string{
+		"authorization": fmt.Sprintf("%s %s", tokenType, token),
+	})
+
+	return metadata.NewIncomingContext(ctx, md)
+}

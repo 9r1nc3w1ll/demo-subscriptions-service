@@ -15,7 +15,7 @@ type Product struct {
 	ID          int64
 	Name        string
 	Description string
-	Price       float64
+	Price       float32
 	Type        ProductType
 	CreatedAt   time.Time
 	UpdatedAt   time.Time

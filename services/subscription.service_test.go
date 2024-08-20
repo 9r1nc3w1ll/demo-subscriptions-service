@@ -3,30 +3,25 @@ package services
 import (
 	"context"
 	"fmt"
+	"lithium-test/lib/auth"
 	"lithium-test/pb"
 	"testing"
 
 	_ "github.com/lib/pq"
 	"github.com/stretchr/testify/assert"
-	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 func TestCreateSubscriptionPlan(t *testing.T) {
 	t.Run("Successfully create product", func(t *testing.T) {
-		ctx := context.Background()
-
-		md := metadata.New(map[string]string{
-			"authorization": "Bearer VALID_TEST_TOKEN",
-		})
-		ctx = metadata.NewIncomingContext(ctx, md)
+		ctx := auth.SetAuthContextForTest(context.Background(), "Bearer", "VALID_TEST_TOKEN")
 
 		productService := NewProductService(db)
 		subscriptionService := NewSubscriptionService(db)
 
 		createProductResponse, err := productService.CreateProduct(ctx, &pb.CreateProductInput{
 			Name:        "Product 1",
-			Type:        "SUBSCRIPTION",
+			Type:        "subscription",
 			Price:       10.50,
 			Description: "Description of product 1",
 		})
@@ -58,19 +53,14 @@ func TestCreateSubscriptionPlan(t *testing.T) {
 }
 
 func TestGetSubscriptionPlan(t *testing.T) {
-	ctx := context.Background()
-
-	md := metadata.New(map[string]string{
-		"authorization": "Bearer VALID_TEST_TOKEN",
-	})
-	ctx = metadata.NewIncomingContext(ctx, md)
+	ctx := auth.SetAuthContextForTest(context.Background(), "Bearer", "VALID_TEST_TOKEN")
 
 	productService := NewProductService(db)
 	subscriptionService := NewSubscriptionService(db)
 
 	createProductResponse, err := productService.CreateProduct(ctx, &pb.CreateProductInput{
 		Name:        "Product 1",
-		Type:        "SUBSCRIPTION",
+		Type:        "subscription",
 		Price:       10.50,
 		Description: "Description of product 1",
 	})
@@ -117,19 +107,14 @@ func TestGetSubscriptionPlan(t *testing.T) {
 }
 
 func TestGetSubscriptionPlans(t *testing.T) {
-	ctx := context.Background()
-
-	md := metadata.New(map[string]string{
-		"authorization": "Bearer VALID_TEST_TOKEN",
-	})
-	ctx = metadata.NewIncomingContext(ctx, md)
+	ctx := auth.SetAuthContextForTest(context.Background(), "Bearer", "VALID_TEST_TOKEN")
 
 	productService := NewProductService(db)
 	subscriptionService := NewSubscriptionService(db)
 
 	createProductResponse, err := productService.CreateProduct(ctx, &pb.CreateProductInput{
 		Name:        "Product 1",
-		Type:        "SUBSCRIPTION",
+		Type:        "subscription",
 		Price:       10.50,
 		Description: "Description of product 1",
 	})
@@ -166,19 +151,14 @@ func TestGetSubscriptionPlans(t *testing.T) {
 }
 
 func TestDeleteSubscriptionPlan(t *testing.T) {
-	ctx := context.Background()
-
-	md := metadata.New(map[string]string{
-		"authorization": "Bearer VALID_TEST_TOKEN",
-	})
-	ctx = metadata.NewIncomingContext(ctx, md)
+	ctx := auth.SetAuthContextForTest(context.Background(), "Bearer", "VALID_TEST_TOKEN")
 
 	productService := NewProductService(db)
 	subscriptionService := NewSubscriptionService(db)
 
 	createProductResponse, err := productService.CreateProduct(ctx, &pb.CreateProductInput{
 		Name:        "Product 1",
-		Type:        "SUBSCRIPTION",
+		Type:        "subscription",
 		Price:       10.50,
 		Description: "Description of product 1",
 	})

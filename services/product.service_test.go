@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"lithium-test/db/models"
+	"lithium-test/lib/auth"
 	"lithium-test/pb"
 	"log"
 	"os"
@@ -86,12 +87,8 @@ func TestMain(m *testing.M) {
 
 func TestCreateProduct(t *testing.T) {
 	t.Run("Validate product type", func(t *testing.T) {
-		ctx := context.Background()
+		ctx := auth.SetAuthContextForTest(context.Background(), "Bearer", "VALID_TEST_TOKEN")
 
-		md := metadata.New(map[string]string{
-			"authorization": "Bearer VALID_TEST_TOKEN",
-		})
-		ctx = metadata.NewIncomingContext(ctx, md)
 		service := NewProductService(db)
 
 		response, err := service.CreateProduct(ctx, &pb.CreateProductInput{
@@ -108,12 +105,7 @@ func TestCreateProduct(t *testing.T) {
 	})
 
 	t.Run("Successfully create physical product", func(t *testing.T) {
-		ctx := context.Background()
-
-		md := metadata.New(map[string]string{
-			"authorization": "Bearer VALID_TEST_TOKEN",
-		})
-		ctx = metadata.NewIncomingContext(ctx, md)
+		ctx := auth.SetAuthContextForTest(context.Background(), "Bearer", "VALID_TEST_TOKEN")
 		service := NewProductService(db)
 
 		response, err := service.CreateProduct(ctx, &pb.CreateProductInput{
@@ -150,12 +142,7 @@ func TestCreateProduct(t *testing.T) {
 	})
 
 	t.Run("Successfully create digital product", func(t *testing.T) {
-		ctx := context.Background()
-
-		md := metadata.New(map[string]string{
-			"authorization": "Bearer VALID_TEST_TOKEN",
-		})
-		ctx = metadata.NewIncomingContext(ctx, md)
+		ctx := auth.SetAuthContextForTest(context.Background(), "Bearer", "VALID_TEST_TOKEN")
 		service := NewProductService(db)
 
 		response, err := service.CreateProduct(ctx, &pb.CreateProductInput{
@@ -192,12 +179,7 @@ func TestCreateProduct(t *testing.T) {
 	})
 
 	t.Run("Successfully create subscription product", func(t *testing.T) {
-		ctx := context.Background()
-
-		md := metadata.New(map[string]string{
-			"authorization": "Bearer VALID_TEST_TOKEN",
-		})
-		ctx = metadata.NewIncomingContext(ctx, md)
+		ctx := auth.SetAuthContextForTest(context.Background(), "Bearer", "VALID_TEST_TOKEN")
 		service := NewProductService(db)
 
 		response, err := service.CreateProduct(ctx, &pb.CreateProductInput{

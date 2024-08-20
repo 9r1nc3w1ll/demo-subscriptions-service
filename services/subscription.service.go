@@ -2,8 +2,8 @@ package services
 
 import (
 	"context"
-	"lithium-test/auth"
 	"lithium-test/db/models"
+	"lithium-test/lib/auth"
 	"lithium-test/pb"
 
 	"google.golang.org/protobuf/types/known/emptypb"

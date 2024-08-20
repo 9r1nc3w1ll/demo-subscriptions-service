@@ -3,8 +3,8 @@ package services
 import (
 	"context"
 	"fmt"
-	"lithium-test/auth"
 	"lithium-test/db/models"
+	"lithium-test/lib/auth"
 	"lithium-test/pb"
 
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -64,7 +64,7 @@ func (s *ProductService) CreateProduct(ctx context.Context, in *pb.CreateProduct
 		Name:        in.Name,
 		Description: in.Description,
 		Type:        models.ProductType(in.Type),
-		Price:       float64(in.Price),
+		Price:       in.Price,
 	}
 
 	if in.Type == models.PhysicalProductType {
@@ -97,7 +97,7 @@ func (s *ProductService) UpdateProduct(ctx context.Context, in *pb.Product) (*pb
 	product := models.Product{
 		Name:  in.Name,
 		Type:  models.ProductType(in.Type),
-		Price: float64(in.Price),
+		Price: in.Price,
 	}
 
 	if result := s.db.Create(&product); result.Error != nil {
